@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - todo-network
+    volumes:
+      - mongo-data:/data/db  # Use named volume
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+  todo-service:
+    container_name: todo-service-compose
+    image: todo-service-compose:1.0
+    build:
+      context: ../todo-service
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - todo-network
+    volumes:
+      - todo-volume:/var/www/logs 
+    depends_on: 
+      - mongodb
+
+  user-service:
+    container_name: user-service-compose
+    image: user-service-compose:1.0
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    networks:
+      - todo-network
+    volumes:
+      - user-volume:/var/www/logs  
+    depends_on: 
+      - mongodb
+
+  todo-app:
+    container_name: frontend-compose
+    image: todo-app-compose:1.0
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - todo-network
+    volumes:
+      - frontend-volume:/var/www/logs 
+    depends_on: 
+      - mongodb 
+
+networks:
+  todo-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  user-volume:
+  todo-volume:
+  frontend-volume: 
+
+
+#build image and run container : docker-compose up -d
