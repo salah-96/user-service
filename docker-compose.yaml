@@ -16,7 +16,7 @@ services:
 
   todo-service:
     container_name: todo-service-compose
-    image: todo-service-compose:1.0
+    image: saalaah/todo-service-compose:1.0
     build:
       context: ../todo-service
       dockerfile: Dockerfile
@@ -31,7 +31,7 @@ services:
 
   user-service:
     container_name: user-service-compose
-    image: user-service-compose:1.0
+    image: saalaah/user-service-compose:1.0
     build:
       context: ../user-service
       dockerfile: Dockerfile
@@ -44,9 +44,9 @@ services:
     depends_on: 
       - mongodb
 
-  todo-app:
+  frontend:
     container_name: frontend-compose
-    image: todo-app-compose:1.0
+    image: saalaah/frontend-compose:1.0
     build:
       context: ../frontend
       dockerfile: Dockerfile
